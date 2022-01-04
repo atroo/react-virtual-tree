@@ -1,0 +1,57 @@
+{
+    "name": "virtual-tree",
+    "version": "1.4.1",
+    "description": "virtual tree with support of dnd, infinite loader, selection of nodes, async loading, etc",
+    "keywords": [],
+    "source": "src/index.tsx",
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "scripts": {
+        "build": "microbundle-crl --no-compress -f modern,cjs --css-modules true",
+        "start": "microbundle-crl watch --no-compress -f modern,cjs --css-modules true",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "peerDependencies": {
+        "react": ">= 16.0.0",
+        "react-dom": ">= 16.0.0"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "atroo-react-sortable-tree": "^2.8.2",
+        "axios": "^0.21.1",
+        "clsx": "^1.1.1",
+        "lodash.debounce": "^4.0.8",
+        "react-dnd": "^14.0.2",
+        "react-window-infinite-loader": "^1.0.7",
+        "shortid": "^2.2.16"
+    },
+    "devDependencies": {
+        "@types/axios": "^0.14.0",
+        "@types/debounce": "^1.2.0",
+        "@types/react": "^17.0.11",
+        "@types/react-dom": "^17.0.8",
+        "@types/react-sortable-tree": "^0.3.13",
+        "@types/react-window-infinite-loader": "^1.0.5",
+        "@types/shortid": "0.0.29",
+        "@typescript-eslint/eslint-plugin": "^4.28.0",
+        "@typescript-eslint/parser": "^4.28.0",
+        "babel-plugin-transform-async-to-promises": "0.8.15",
+        "eslint": "^7.29.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.23.4",
+        "eslint-plugin-prettier": "^3.4.0",
+        "eslint-plugin-react": "^7.24.0",
+        "eslint-plugin-react-hooks": "^4.2.0",
+        "husky": "4.3.0",
+        "lint-staged": "10.4.2",
+        "microbundle-crl": "^0.13.11",
+        "node-sass": "^6.0.1",
+        "prettier": "^2.1.2",
+        "typescript": "^4.3.4"
+    },
+    "lint-staged": {
+        "*.{ts,js}": "eslint --cache --fix",
+        "*.{ts,js,css,md}": "prettier --write"
+    }
+}
