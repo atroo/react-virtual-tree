@@ -129,6 +129,13 @@ export const ExampleVirtualTree: React.FC = () => {
         onDraggedFinished={(info) => {
           console.log("info", info);
         }}
+        canDragInterceptor={(data) => {
+          return data.treeIndex !== 0;
+        }}
+        canDropInterceptor={({ treeIndex, nextPath, nextParent }) => {
+          console.log("nodrop", nextParent.treeIndex !== 1);
+          return nextParent.treeIndex !== 1;
+        }}
         loader={loader}
         renderers={{
           node: renderNode,
