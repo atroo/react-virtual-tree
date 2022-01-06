@@ -1,6 +1,6 @@
 {
-    "name": "virtual-tree",
-    "version": "1.4.1",
+    "name": "react-infinite-virtual-tree",
+    "version": "1.4.2",
     "description": "virtual tree with support of dnd, infinite loader, selection of nodes, async loading, etc",
     "keywords": [],
     "source": "src/index.tsx",
