@@ -15,6 +15,7 @@ import SortableTree, {
     ExtendedNodeData,
     NodeData,
     OnDragPreviousAndNextLocation,
+    SortableTreeWithoutDndContext,
 } from "atroo-react-sortable-tree";
 import { useOnDragFinished } from "./hooks/useOnDragFinished";
 import { createFileExplorerTheme } from "./themes/file-explorer-theme";
@@ -76,6 +77,7 @@ interface IVirtialTreeProps<T extends DefaultDataItem>
     canDropInterceptor?: (
         data: OnDragPreviousAndNextLocation & NodeData,
     ) => boolean;
+    withoutDefaultDragContext: boolean;
 }
 
 export interface VirtualTreeRef<T extends DefaultDataItem> {
@@ -271,6 +273,11 @@ const VirtualTreeImpl = <T extends DefaultDataItem>(
         return createFileExplorerTheme(props.renderers);
     }, []);
 
+    const TreeComp =
+        props.withoutDefaultDragContext === true
+            ? SortableTreeWithoutDndContext
+            : SortableTree;
+
     return (
         <div ref={rootRef} className={styles.root}>
             <InfiniteLoader
@@ -308,7 +315,7 @@ const VirtualTreeImpl = <T extends DefaultDataItem>(
                 itemCount={Infinity}
             >
                 {({ onItemsRendered }) => (
-                    <SortableTree
+                    <TreeComp
                         treeData={treeData}
                         onChange={(tData: DataNode<T>[]) => setTreeData(tData)}
                         canDrag={data => {

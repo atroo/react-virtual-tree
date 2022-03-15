@@ -12,6 +12,8 @@ import clsx from "clsx";
 import FolderIcon from "@material-ui/icons/Folder";
 import FolderSharedIcon from "@material-ui/icons/FolderShared";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 
 const loader = createLoader<DefaultDataItem>(loadNodes, makeNode);
 
@@ -122,25 +124,28 @@ const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
 
 export const ExampleVirtualTree: React.FC = () => {
   return (
-    <div style={{ flex: 1 }}>
-      <VirtualTree
-        url="hey"
-        onNodeSelected={(node) => console.log("Selected node: ", node)}
-        onDraggedFinished={(info) => {
-          console.log("info", info);
-        }}
-        canDragInterceptor={(data) => {
-          return data.treeIndex !== 0;
-        }}
-        canDropInterceptor={({ treeIndex, nextPath, nextParent }) => {
-          console.log("nodrop", nextParent.treeIndex !== 1);
-          return nextParent.treeIndex !== 1;
-        }}
-        loader={loader}
-        renderers={{
-          node: renderNode,
-        }}
-      />
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div style={{ flex: 1 }}>
+        <VirtualTree
+          withoutDefaultDragContext={true}
+          url="hey"
+          onNodeSelected={(node) => console.log("Selected node: ", node)}
+          onDraggedFinished={(info) => {
+            console.log("info", info);
+          }}
+          canDragInterceptor={(data) => {
+            return data.treeIndex !== 0;
+          }}
+          canDropInterceptor={({ treeIndex, nextPath, nextParent }) => {
+            console.log("nodrop", nextParent.treeIndex !== 1);
+            return nextParent.treeIndex !== 1;
+          }}
+          loader={loader}
+          renderers={{
+            node: renderNode,
+          }}
+        />
+      </div>
+    </DndProvider>
   );
 };
