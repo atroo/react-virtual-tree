@@ -14,6 +14,7 @@ import FolderSharedIcon from "@material-ui/icons/FolderShared";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
+global.process = require("process");
 
 const loader = createLoader<DefaultDataItem>(loadNodes, makeNode);
 
