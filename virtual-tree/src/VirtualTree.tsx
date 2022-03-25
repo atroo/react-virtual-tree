@@ -50,6 +50,7 @@ const debounce = require("lodash.debounce");
 import styles from "./VirtualTree.module.scss";
 import { useScrollQueue } from "./hooks/useScrollQueue";
 import { FetchNodes } from ".";
+import { Index } from "react-virtualized";
 
 /**
  * TODOS
@@ -78,6 +79,8 @@ interface IVirtialTreeProps<T extends DefaultDataItem>
         data: OnDragPreviousAndNextLocation & NodeData,
     ) => boolean;
     withoutDefaultDragContext: boolean;
+    rowHeight?: number | ((info: NodeData & Index) => number) | undefined;
+    listRef?: React.MutableRefObject<any>;
 }
 
 export interface VirtualTreeRef<T extends DefaultDataItem> {
@@ -317,7 +320,9 @@ const VirtualTreeImpl = <T extends DefaultDataItem>(
                 {({ onItemsRendered }) => (
                     <TreeComp
                         treeData={treeData}
-                        onChange={(tData: DataNode<T>[]) => setTreeData(tData)}
+                        onChange={(tData: DataNode<T>[]) => {
+                            setTreeData(tData);
+                        }}
                         canDrag={data => {
                             let interceptorAllows = true;
                             if (props.canDragInterceptor) {
@@ -344,6 +349,8 @@ const VirtualTreeImpl = <T extends DefaultDataItem>(
                         }}
                         canNodeHaveChildren={skeletonCannotHaveChildren}
                         reactVirtualizedListProps={{
+                            ref: props.listRef,
+
                             onRowsRendered: info => {
                                 return onItemsRendered({
                                     overscanStartIndex: info.overscanStartIndex,
@@ -374,7 +381,7 @@ const VirtualTreeImpl = <T extends DefaultDataItem>(
                         }}
                         onVisibilityToggle={onVisibilityToggle}
                         scaffoldBlockPxWidth={28}
-                        rowHeight={40}
+                        rowHeight={props.rowHeight || 40}
                         {...rest}
                     />
                 )}

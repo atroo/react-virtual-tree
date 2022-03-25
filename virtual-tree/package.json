@@ -1,6 +1,6 @@
 {
     "name": "react-infinite-virtual-tree",
-    "version": "1.4.3",
+    "version": "1.6.0",
     "description": "virtual tree with support of dnd, infinite loader, selection of nodes, async loading, etc",
     "keywords": [],
     "source": "src/index.tsx",
@@ -20,7 +20,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "atroo-react-sortable-tree": "2.8.2",
+        "atroo-react-sortable-tree": "2.9.0",
         "axios": "^0.21.1",
         "clsx": "^1.1.1",
         "lodash.debounce": "^4.0.8",

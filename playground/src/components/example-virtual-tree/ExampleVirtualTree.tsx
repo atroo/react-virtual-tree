@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   DefaultDataItem,
   createLoader,
@@ -18,7 +18,17 @@ global.process = require("process");
 
 const loader = createLoader<DefaultDataItem>(loadNodes, makeNode);
 
-const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
+const SelectedCtx = React.createContext<{
+  selected: string;
+  setSelected: (a: any) => void;
+}>({
+  selected: "",
+  setSelected: () => {
+    //nop
+  },
+});
+
+const MyTreeNode = (props: IRenderNodeProps<DefaultDataItem>) => {
   const {
     onExpandButtonClick,
     node,
@@ -35,13 +45,15 @@ const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
     defaultClassNames,
   } = props;
 
+  const { selected, setSelected } = useContext(SelectedCtx);
+
   let FolderIconComponent = FolderIcon;
   if (node?.data?.shared) {
     FolderIconComponent = FolderSharedIcon;
   }
 
   return (
-    <div style={{ height: "100%" }} {...otherProps}>
+    <>
       {onExpandButtonClick && node.childrenCount ? (
         <button
           type="button"
@@ -61,7 +73,13 @@ const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
       <div className={defaultClassNames.rowWrapperClassName}>
         {/* Set the row preview to be used during drag and drop */}
         {connectDragPreview(
-          <div style={{ display: "flex" }}>
+          <div
+            style={{ display: "flex" }}
+            onClick={() => {
+              setSelected(node.id);
+              console.log("console log my clickor", node);
+            }}
+          >
             {scaffold}
             {isPlaceholder && (
               <FolderIconComponent className={defaultClassNames.folder} />
@@ -93,7 +111,7 @@ const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
                     </div>
                     <div className={defaultClassNames.rowLabel}>
                       <span className={defaultClassNames.rowTitle}>
-                        {nodeTitle}
+                        {nodeTitle} {node.id === selected ? "S" : ""}
                         {Boolean(node.childrenCount) && (
                           <span className={defaultClassNames.childrenCount}>
                             ({node.childrenCount})
@@ -119,34 +137,61 @@ const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
           </div>
         )}
       </div>
+    </>
+  );
+};
+
+const renderNode = (props: IRenderNodeProps<DefaultDataItem>) => {
+  const { onExpandButtonClick, node, otherProps } = props;
+  return (
+    <div style={{ height: "100%" }} {...otherProps}>
+      <MyTreeNode {...props} />
     </div>
   );
 };
 
 export const ExampleVirtualTree: React.FC = () => {
+  const [selected, setSelected] = useState<any>(undefined);
+  const listRef = useRef<any>();
+  const [selectionManager, setSelectionManger] = useState({
+    selected,
+    setSelected,
+  });
+  useEffect(() => {
+    setSelectionManger({ selected, setSelected });
+  }, [selected]);
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div style={{ flex: 1 }}>
-        <VirtualTree
-          withoutDefaultDragContext={true}
-          url="hey"
-          onNodeSelected={(node) => console.log("Selected node: ", node)}
-          onDraggedFinished={(info) => {
-            console.log("info", info);
-          }}
-          canDragInterceptor={(data) => {
-            return data.treeIndex !== 0;
-          }}
-          canDropInterceptor={({ treeIndex, nextPath, nextParent }) => {
-            console.log("nodrop", nextParent.treeIndex !== 1);
-            return nextParent.treeIndex !== 1;
-          }}
-          loader={loader}
-          renderers={{
-            node: renderNode,
-          }}
-        />
-      </div>
-    </DndProvider>
+    <SelectedCtx.Provider value={selectionManager}>
+      <DndProvider backend={HTML5Backend}>
+        <div style={{ flex: 1 }}>
+          <VirtualTree
+            listRef={listRef}
+            rowHeight={({ node, index }) => {
+              return index === 0 && node.expanded ? 80 : 40;
+            }}
+            withoutDefaultDragContext={true}
+            url="hey"
+            onDraggedFinished={(info) => {
+              console.log("info", info);
+            }}
+            canDragInterceptor={(data) => {
+              return data.treeIndex !== 0;
+            }}
+            canDropInterceptor={({ treeIndex, nextPath, nextParent }) => {
+              console.log("nodrop", nextParent.treeIndex !== 1);
+              return nextParent.treeIndex !== 1;
+            }}
+            loader={loader}
+            renderers={{
+              node: renderNode,
+            }}
+            onTreeDataChange={() => {
+              console.log("hallo", listRef);
+              listRef.current?.wrappedInstance.current?.recomputeRowHeights(0);
+            }}
+          />
+        </div>
+      </DndProvider>
+    </SelectedCtx.Provider>
   );
 };

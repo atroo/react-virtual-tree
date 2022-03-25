@@ -18,6 +18,7 @@ export const useNodeSelection = <T extends DefaultDataItem>(
     }, [selectedNode]);
 
     const generateNodeProps = (data: ExtendedNodeData) => {
+        if (!onNodeSelected) return {};
         return {
             onClick: (e: React.SyntheticEvent<HTMLElement, MouseEvent>) => {
                 if ((e.target as HTMLElement).closest('[type="button"]')) {
